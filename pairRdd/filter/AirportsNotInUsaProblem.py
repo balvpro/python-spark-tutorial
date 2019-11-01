@@ -1,4 +1,7 @@
-from pyspark import SparkContext
+from pyspark import SparkContext, SparkConf
+import sys
+sys.path.insert(0, ".")
+from commons.Utils import Utils
 
 if __name__ == "__main__":
 
@@ -18,3 +21,12 @@ if __name__ == "__main__":
     ...
 
     '''
+    conf = SparkConf().setAppName("Non US Airports").setMaster("local[1]")
+    sc = SparkContext(conf=conf)
+    airports_string_rdd = sc.textFile("in/airports.text")
+    airports_arr_rdd = airports_string_rdd.map(lambda line: Utils.COMMA_DELIMITER.split(line))
+    non_us_airports_rdd = airports_arr_rdd.filter(lambda ap: ap[3] != '"United States"')
+    non_us_airports_pair_rdd = non_us_airports_rdd.map(lambda ap: (ap[1], ap[3]))
+    print(non_us_airports_pair_rdd.count())
+
+

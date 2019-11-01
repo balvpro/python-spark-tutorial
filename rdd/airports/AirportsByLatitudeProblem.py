@@ -1,4 +1,7 @@
-from pyspark import SparkContext
+from pyspark import SparkContext, SparkConf
+import sys
+sys.path.insert(0, '.')
+from commons.Utils import Utils
 
 if __name__ == "__main__":
 
@@ -15,3 +18,11 @@ if __name__ == "__main__":
     "Tofino", 49.082222
     ...
     '''
+
+    configuration = SparkConf().setAppName("airports latitude").setMaster("local[*]")
+    sc = SparkContext(conf = configuration)
+    
+    airports = sc.textFile("in/airports.text").map(lambda line: Utils.COMMA_DELIMITER.split(line))
+    filtered_airports = airports.filter(lambda airport: float(airport[6])>40).collect()
+    for ap in filtered_airports:
+        print(f'{ap[1]}, {ap[6]}')

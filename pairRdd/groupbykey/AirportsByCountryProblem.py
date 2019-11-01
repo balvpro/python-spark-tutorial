@@ -1,4 +1,8 @@
-from pyspark import SparkContext
+import sys
+sys.path.insert(0, ".")
+
+from pyspark import SparkContext, SparkConf
+from commons.Utils import Utils
 
 if __name__ == "__main__":
 
@@ -18,6 +22,16 @@ if __name__ == "__main__":
     ...
 
     '''
+    cf = SparkConf().setAppName("AirportsByCountry").setMaster("local[*]")
+    sc = SparkContext(conf=cf)
 
+    airports_text = sc.textFile("in/airports.text")
+    airports_arr = airports_text.map(lambda ap: Utils.COMMA_DELIMITER.split(ap))
+    country_airport_pairs = airports_arr.map(lambda ap: (ap[3], ap[1]))
+    country_airports = country_airport_pairs.groupByKey().collectAsMap()
+    for item in country_airports.items():
+        print(f"{item[0]}: {list(item[1])}")
+
+    print("---done---")
 
      

@@ -14,7 +14,7 @@ if __name__ == "__main__":
 
     wordCountsWithGroupByKey = wordsPairRdd \
         .groupByKey() \
-        .mapValues(len) \
+        .mapValues(sum) \
         .collect()
     print("wordCountsWithGroupByKey: {}".format(list(wordCountsWithGroupByKey)))
 

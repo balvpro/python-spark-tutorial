@@ -16,3 +16,4 @@ if __name__ == "__main__":
     airportsNotInUSA = airportPairRDD.filter(lambda keyValue: keyValue[1] != "\"United States\"")
 
     airportsNotInUSA.saveAsTextFile("out/airports_not_in_usa_pair_rdd.text")
+    print(airportsNotInUSA.count())
